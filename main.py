@@ -23,7 +23,32 @@ class BackgroundRemoverApp:
         self.main_frame = ctk.CTkFrame(root, corner_radius=15)
         self.main_frame.pack(fill="both", expand=True)
         self.root.overrideredirect(True)
+        
+        # Custom title bar
+        self.title_bar = ctk.CTkFrame(self.main_frame, corner_radius=0, height=30, fg_color="#2b2b2b")
+        self.title_bar.pack(fill="x", side="top")
 
+        # App title
+        self.title_label = ctk.CTkLabel(self.title_bar, text="  Background Remover", font=ctk.CTkFont(size=13, weight="bold"))
+        self.title_label.pack(side="left", padx=10)
+
+        # Minimize button
+        self.minimize_button = ctk.CTkButton(self.title_bar, text="–", width=20, command=self.minimize_window, fg_color="transparent", hover_color="#444", corner_radius=0)
+        self.minimize_button.pack(side="right", padx=(0, 2))
+
+        # Maximize / restore (optional)
+        self.maximize_button = ctk.CTkButton(self.title_bar, text="□", width=20, command=self.maximize_window, fg_color="transparent", hover_color="#444", corner_radius=0)
+        self.maximize_button.pack(side="right")
+
+        # Close button
+        self.close_button = ctk.CTkButton(self.title_bar, text="✕", width=20, command=self.root.destroy, fg_color="transparent", hover_color="#a00", corner_radius=0)
+        self.close_button.pack(side="right")
+        
+        self.title_bar.bind("<Button-1>", self.start_move)
+        self.title_bar.bind("<B1-Motion>", self.do_move)
+        self.title_label.bind("<Button-1>", self.start_move)
+        self.title_label.bind("<B1-Motion>", self.do_move)
+        
         # Drop area
         self.drop_area = ctk.CTkButton(
             self.main_frame,
@@ -43,33 +68,7 @@ class BackgroundRemoverApp:
         self.drop_area.dnd_bind('<<Drop>>', self.handle_drop)
         self.drop_area.bind("<Enter>", lambda e: self.drop_area.configure(fg_color="#dceaf6"))
         self.drop_area.bind("<Leave>", lambda e: self.drop_area.configure(fg_color="#e3eaf0"))
-        
-        # Custom title bar
-        self.title_bar = ctk.CTkFrame(self.main_frame, corner_radius=0, height=30, fg_color="#2b2b2b")
-        self.title_bar.pack(fill="x", side="top")
 
-        # App title
-        self.title_label = ctk.CTkLabel(self.title_bar, text="  Background Remover", font=ctk.CTkFont(size=13, weight="bold"))
-        self.title_label.pack(side="left", padx=10)
-
-        # Minimize button
-        self.minimize_button = ctk.CTkButton(self.title_bar, text="–", width=20, command=self.minimize_window, fg_color="transparent", hover_color="#444", corner_radius=0)
-        self.minimize_button.pack(side="right", padx=(0, 2))
-
-        # Maximize / restore (optional)
-        # self.maximize_button = ctk.CTkButton(self.title_bar, text="□", width=20, command=self.maximize_window, fg_color="transparent", hover_color="#444", corner_radius=0)
-        # self.maximize_button.pack(side="right")
-
-        # Close button
-        self.close_button = ctk.CTkButton(self.title_bar, text="✕", width=20, command=self.root.destroy, fg_color="transparent", hover_color="#a00", corner_radius=0)
-        self.close_button.pack(side="right")
-        
-        self.title_bar.bind("<Button-1>", self.start_move)
-        self.title_bar.bind("<B1-Motion>", self.do_move)
-        self.title_label.bind("<Button-1>", self.start_move)
-        self.title_label.bind("<B1-Motion>", self.do_move)
-
-        
         # Container for scroll area and background watermark
         self.scroll_container = ctk.CTkFrame(self.main_frame, corner_radius=10)
         self.scroll_container.pack(padx=10, pady=10, fill="both", expand=True)
