@@ -1,5 +1,6 @@
 import os
 import customtkinter as ctk
+from customtkinter import CTkImage
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
 from rembg import remove
@@ -45,6 +46,13 @@ class BackgroundRemoverApp:
         # Scrollable list for image cards
         self.scroll_frame = ctk.CTkScrollableFrame(self.main_frame, height=320, corner_radius=10)
         self.scroll_frame.pack(padx=10, pady=10, fill="both", expand=True)
+        
+        # Load and add watermark image
+        watermark_pil = Image.open("watermark.png")
+        self.watermark_tk = CTkImage(light_image=watermark_pil, size=(160, 160))  # increase size as needed
+
+        self.watermark_label = ctk.CTkLabel(self.scroll_frame, image=self.watermark_tk, text="")
+        self.watermark_label.place(relx=0.5, rely=0.5, anchor="center")
 
         # Progress bar
         self.progress = ctk.CTkProgressBar(self.main_frame)
@@ -100,6 +108,8 @@ class BackgroundRemoverApp:
                 self.file_list.append(path)
             except Exception as e:
                 print(f"Error loading thumbnail: {e}")
+                
+                self.watermark_label.place_forget()  # Hide watermark
 
     def process_files(self):
         if not self.file_list:
@@ -135,6 +145,7 @@ class BackgroundRemoverApp:
     def reset(self):
         self.file_list.clear()
         self.thumbnail_refs.clear()
+        self.watermark_label.place(relx=0.5, rely=0.5, anchor="center")  # Show watermark
         for widget in self.scroll_frame.winfo_children():
             widget.destroy()
         self.progress.set(0)
