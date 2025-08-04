@@ -44,19 +44,23 @@ class BackgroundRemoverApp:
             messagebox.showwarning("No Files", "Please add image files first.")
             return
 
+        output_dir = filedialog.askdirectory(title="Select Output Folder")
+        if not output_dir:
+            return  # User canceled
+
         for path in self.file_list:
             try:
                 input_image = Image.open(path)
                 output_image = remove(input_image)
                 filename = os.path.basename(path)
                 name, _ = os.path.splitext(filename)
-                output_path = os.path.join(OUTPUT_DIR, name + ".png")
+                output_path = os.path.join(output_dir, name + ".png")
                 output_image.save(output_path)
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to process {path}:\n{e}")
                 continue
 
-        messagebox.showinfo("Done", f"Processed {len(self.file_list)} images.\nSaved to '{OUTPUT_DIR}'.")
+        messagebox.showinfo("Done", f"Processed {len(self.file_list)} images.\nSaved to '{output_dir}'.")
 
         # Reset
         self.file_list.clear()
