@@ -49,15 +49,15 @@ class BackgroundRemoverApp:
 
         # Load watermark and place it in the background
         watermark_pil = Image.open("watermark.png")
-        self.watermark_tk = CTkImage(light_image=watermark_pil, size=(200, 200))
-
-        self.watermark_label = ctk.CTkLabel(self.scroll_container, image=self.watermark_tk, text="")
-        self.watermark_label.place(relx=0.5, rely=0.5, anchor="center")
-
+        self.watermark_tk = CTkImage(light_image=watermark_pil, size=(250, 250))
+        
         # Scrollable frame layered on top
         self.scroll_frame = ctk.CTkScrollableFrame(self.scroll_container, corner_radius=10, fg_color="transparent")
         self.scroll_frame.place(relx=0, rely=0, relwidth=1, relheight=1)
-        self.watermark_label.lift()
+        
+        self.watermark_label = ctk.CTkLabel(self.scroll_container, image=self.watermark_tk, text="")
+        self.watermark_label.place(relx=0.5, rely=0.5, anchor="center")
+        self.watermark_label.lower()
 
         # Progress bar
         self.progress = ctk.CTkProgressBar(self.main_frame)
@@ -111,7 +111,8 @@ class BackgroundRemoverApp:
                 label_name.pack(side="left", fill="x", expand=True, padx=10)
 
                 self.file_list.append(path)
-                """ self.watermark_label.place_forget() """
+                
+                self.watermark_label.place_forget()
                                 
             except Exception as e:
                 print(f"Error loading thumbnail: {e}")
@@ -153,6 +154,7 @@ class BackgroundRemoverApp:
         for widget in self.scroll_frame.winfo_children():
             widget.destroy()
         self.watermark_label.place(relx=0.5, rely=0.5, anchor="center")
+        self.watermark_label.lower()
         self.progress.set(0)
 
 if __name__ == "__main__":
