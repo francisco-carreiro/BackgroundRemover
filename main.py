@@ -12,13 +12,10 @@ THUMB_SIZE = (100, 100)
 
 class BackgroundRemoverApp:
     def __init__(self, root):
-        root = TkinterDnD.Tk()
-        root.iconbitmap("icon.ico")
-        
         self.root = root
-        self.root.title("🧼 Background Remover")
+        self.root.title("Background Remover")
         self.root.geometry("640x560")
-        self.root.configure(bg="#f9f9f9")
+        self.root.configure(bg="#121212")
 
         self.file_list = []
         self.thumbnail_refs = []
@@ -31,12 +28,12 @@ class BackgroundRemoverApp:
         self.drop_area = tk.Label(
             root,
             text="📁  Drag and drop images or click here",
-            bg="#e3eaf0",
-            fg="#333",
+            bg="#282828",
+            fg="#fff",
             font=self.font_bold,
             height=3,
-            relief="groove",
-            bd=2,
+            relief="solid",
+            bd=1,
             padx=10
         )
         self.drop_area.pack(fill=tk.X, padx=15, pady=12)
@@ -45,7 +42,7 @@ class BackgroundRemoverApp:
         self.drop_area.bind("<Button-1>", self.select_files)
 
         # File List Area
-        self.list_frame = tk.Frame(root, bg="#f9f9f9")
+        self.list_frame = tk.Frame(root, bg="#3f3f3f")
         self.list_frame.pack(fill=tk.BOTH, expand=True, padx=15)
 
         self.canvas = tk.Canvas(self.list_frame, bg="#ffffff", highlightthickness=1, highlightbackground="#ccc")
@@ -107,13 +104,13 @@ class BackgroundRemoverApp:
                 thumb = ImageTk.PhotoImage(image)
                 self.thumbnail_refs.append(thumb)  # Keep reference!
 
-                card = tk.Frame(self.scrollable_frame, bg="#f1f1f1", bd=1, relief="solid")
-                card.pack(fill=tk.X, pady=5, padx=10)
+                card = tk.Frame(self.scrollable_frame, bg="#ffffff", highlightthickness=1, highlightbackground="#cccccc")
+                card.pack(fill=tk.X, pady=6, padx=12, ipady=5, ipadx=5)
 
-                label_img = tk.Label(card, image=thumb, bg="#f1f1f1")
-                label_img.pack(side=tk.LEFT, padx=5, pady=5)
+                label_img = tk.Label(card, image=thumb, bg="#ffffff")
+                label_img.pack(side=tk.LEFT, padx=10, pady=5)
 
-                label_name = tk.Label(card, text=os.path.basename(path), bg="#f1f1f1", fg="#333", anchor="w", font=self.font_regular)
+                label_name = tk.Label(card, text=os.path.basename(path), bg="#ffffff", fg="#333", anchor="w", font=self.font_regular)
                 label_name.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=10)
 
                 self.file_list.append(path)
@@ -160,5 +157,6 @@ class BackgroundRemoverApp:
 
 if __name__ == "__main__":
     root = TkinterDnD.Tk()
+    root.iconbitmap("icon.ico")
     app = BackgroundRemoverApp(root)
     root.mainloop()
