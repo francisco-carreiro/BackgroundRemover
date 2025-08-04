@@ -11,24 +11,41 @@ THUMB_SIZE = (100, 100)
 class BackgroundRemoverApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Background Remover with Thumbnails")
-        self.root.geometry("600x500")
+        self.root.title("🧼 Background Remover")
+        self.root.geometry("640x560")
+        self.root.configure(bg="#f9f9f9")
 
         self.file_list = []
         self.thumbnail_refs = []
 
-        self.drop_area = tk.Label(root, text="Drag and drop images or click here", bg="#e0e0e0", height=3)
-        self.drop_area.pack(fill=tk.X, padx=10, pady=10)
+        # Fonts
+        self.font_regular = ("Segoe UI", 10)
+        self.font_bold = ("Segoe UI", 11, "bold")
+
+        # Drop Area
+        self.drop_area = tk.Label(
+            root,
+            text="📁  Drag and drop images or click here",
+            bg="#e3eaf0",
+            fg="#333",
+            font=self.font_bold,
+            height=3,
+            relief="groove",
+            bd=2,
+            padx=10
+        )
+        self.drop_area.pack(fill=tk.X, padx=15, pady=12)
         self.drop_area.drop_target_register(DND_FILES)
         self.drop_area.dnd_bind('<<Drop>>', self.handle_drop)
         self.drop_area.bind("<Button-1>", self.select_files)
 
-        self.list_frame = tk.Frame(root)
-        self.list_frame.pack(fill=tk.BOTH, expand=True, padx=10)
+        # File List Area
+        self.list_frame = tk.Frame(root, bg="#f9f9f9")
+        self.list_frame.pack(fill=tk.BOTH, expand=True, padx=15)
 
-        self.canvas = tk.Canvas(self.list_frame)
+        self.canvas = tk.Canvas(self.list_frame, bg="#ffffff", highlightthickness=1, highlightbackground="#ccc")
         self.scrollbar = tk.Scrollbar(self.list_frame, orient="vertical", command=self.canvas.yview)
-        self.scrollable_frame = tk.Frame(self.canvas)
+        self.scrollable_frame = tk.Frame(self.canvas, bg="#ffffff")
 
         self.scrollable_frame.bind(
             "<Configure>",
@@ -41,11 +58,25 @@ class BackgroundRemoverApp:
         self.canvas.pack(side="left", fill="both", expand=True)
         self.scrollbar.pack(side="right", fill="y")
 
+        # Progress bar
         self.progress = ttk.Progressbar(root, orient="horizontal", mode="determinate")
-        self.progress.pack(fill=tk.X, padx=10, pady=(5, 0))
+        self.progress.pack(fill=tk.X, padx=15, pady=(10, 0))
 
-        self.process_button = tk.Button(root, text="Remove Backgrounds", command=self.process_files)
-        self.process_button.pack(pady=10)
+        # Process Button
+        self.process_button = tk.Button(
+            root,
+            text="🚀 Remove Backgrounds",
+            command=self.process_files,
+            font=self.font_bold,
+            bg="#0078D7",
+            fg="white",
+            activebackground="#005ea6",
+            relief="flat",
+            bd=0,
+            padx=12,
+            pady=6
+        )
+        self.process_button.pack(pady=12)
 
     def select_files(self, event=None):
         file_paths = filedialog.askopenfilenames(filetypes=[("Image Files", "*.jpg *.jpeg *.png")])
@@ -71,14 +102,14 @@ class BackgroundRemoverApp:
                 thumb = ImageTk.PhotoImage(image)
                 self.thumbnail_refs.append(thumb)  # Keep reference!
 
-                frame = tk.Frame(self.scrollable_frame, pady=5)
-                frame.pack(fill=tk.X)
+                card = tk.Frame(self.scrollable_frame, bg="#f1f1f1", bd=1, relief="solid")
+                card.pack(fill=tk.X, pady=5, padx=10)
 
-                label_img = tk.Label(frame, image=thumb)
-                label_img.pack(side=tk.LEFT, padx=5)
+                label_img = tk.Label(card, image=thumb, bg="#f1f1f1")
+                label_img.pack(side=tk.LEFT, padx=5, pady=5)
 
-                label_name = tk.Label(frame, text=os.path.basename(path), anchor="w")
-                label_name.pack(side=tk.LEFT, fill=tk.X, expand=True)
+                label_name = tk.Label(card, text=os.path.basename(path), bg="#f1f1f1", fg="#333", anchor="w", font=self.font_regular)
+                label_name.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=10)
 
                 self.file_list.append(path)
             except Exception as e:
