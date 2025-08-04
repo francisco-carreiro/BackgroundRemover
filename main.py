@@ -14,7 +14,7 @@ class BackgroundRemoverApp:
         self.root.title("Background Remover")
         self.root.geometry("750x600")
         ctk.set_appearance_mode("dark")
-        ctk.set_default_color_theme("blue")
+        ctk.set_default_color_theme("green")
 
         self.file_list = []
         self.thumbnail_refs = []
@@ -42,17 +42,22 @@ class BackgroundRemoverApp:
         self.drop_area.dnd_bind('<<Drop>>', self.handle_drop)
         self.drop_area.bind("<Enter>", lambda e: self.drop_area.configure(fg_color="#dceaf6"))
         self.drop_area.bind("<Leave>", lambda e: self.drop_area.configure(fg_color="#e3eaf0"))
-
-        # Scrollable list for image cards
-        self.scroll_frame = ctk.CTkScrollableFrame(self.main_frame, height=320, corner_radius=10)
-        self.scroll_frame.pack(padx=10, pady=10, fill="both", expand=True)
         
-        # Load and add watermark image
-        watermark_pil = Image.open("watermark.png")
-        self.watermark_tk = CTkImage(light_image=watermark_pil, size=(160, 160))  # increase size as needed
+        # Container for scroll area and background watermark
+        self.scroll_container = ctk.CTkFrame(self.main_frame, corner_radius=10)
+        self.scroll_container.pack(padx=10, pady=10, fill="both", expand=True)
 
-        self.watermark_label = ctk.CTkLabel(self.scroll_frame, image=self.watermark_tk, text="")
+        # Load watermark and place it in the background
+        watermark_pil = Image.open("watermark.png")
+        self.watermark_tk = CTkImage(light_image=watermark_pil, size=(200, 200))
+
+        self.watermark_label = ctk.CTkLabel(self.scroll_container, image=self.watermark_tk, text="")
         self.watermark_label.place(relx=0.5, rely=0.5, anchor="center")
+
+        # Scrollable frame layered on top
+        self.scroll_frame = ctk.CTkScrollableFrame(self.scroll_container, corner_radius=10, fg_color="transparent")
+        self.scroll_frame.place(relx=0, rely=0, relwidth=1, relheight=1)
+        self.watermark_label.lift()
 
         # Progress bar
         self.progress = ctk.CTkProgressBar(self.main_frame)
@@ -71,7 +76,7 @@ class BackgroundRemoverApp:
             font=ctk.CTkFont(weight="bold")
         )
         self.process_button.pack(pady=12)
-
+    
     def select_files(self):
         file_paths = filedialog.askopenfilenames(filetypes=[("Image Files", "*.jpg *.jpeg *.png")])
         for path in file_paths:
@@ -106,11 +111,11 @@ class BackgroundRemoverApp:
                 label_name.pack(side="left", fill="x", expand=True, padx=10)
 
                 self.file_list.append(path)
+                """ self.watermark_label.place_forget() """
+                                
             except Exception as e:
                 print(f"Error loading thumbnail: {e}")
                 
-                self.watermark_label.place_forget()  # Hide watermark
-
     def process_files(self):
         if not self.file_list:
             messagebox.showwarning("No Files", "Please add image files first.")
@@ -145,9 +150,9 @@ class BackgroundRemoverApp:
     def reset(self):
         self.file_list.clear()
         self.thumbnail_refs.clear()
-        self.watermark_label.place(relx=0.5, rely=0.5, anchor="center")  # Show watermark
         for widget in self.scroll_frame.winfo_children():
             widget.destroy()
+        self.watermark_label.place(relx=0.5, rely=0.5, anchor="center")
         self.progress.set(0)
 
 if __name__ == "__main__":
