@@ -8,8 +8,13 @@ from tkinterdnd2 import DND_FILES, TkinterDnD
 
 THUMB_SIZE = (100, 100)
 
+
+
 class BackgroundRemoverApp:
     def __init__(self, root):
+        root = TkinterDnD.Tk()
+        root.iconbitmap("icon.ico")
+        
         self.root = root
         self.root.title("🧼 Background Remover")
         self.root.geometry("640x560")
