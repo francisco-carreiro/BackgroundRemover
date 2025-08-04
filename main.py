@@ -31,19 +31,19 @@ class BackgroundRemoverApp:
         # App title
         self.title_label = ctk.CTkLabel(self.title_bar, text="  Background Remover", font=ctk.CTkFont(size=13, weight="bold"))
         self.title_label.pack(side="left", padx=10)
-
-        # Minimize button
-        self.minimize_button = ctk.CTkButton(self.title_bar, text="–", width=20, command=self.minimize_window, fg_color="transparent", hover_color="#444", corner_radius=0)
-        self.minimize_button.pack(side="right", padx=(0, 2))
-
-        # Maximize / restore (optional)
-        self.maximize_button = ctk.CTkButton(self.title_bar, text="□", width=20, command=self.maximize_window, fg_color="transparent", hover_color="#444", corner_radius=0)
-        self.maximize_button.pack(side="right")
-
+        
         # Close button
         self.close_button = ctk.CTkButton(self.title_bar, text="✕", width=20, command=self.root.destroy, fg_color="transparent", hover_color="#a00", corner_radius=0)
         self.close_button.pack(side="right")
         
+        # Maximize / restore (optional)
+        self.maximize_button = ctk.CTkButton(self.title_bar, text="□", width=20, command=self.maximize_window, fg_color="transparent", hover_color="#444", corner_radius=0)
+        self.maximize_button.pack(side="right")
+        
+        # Minimize button
+        self.minimize_button = ctk.CTkButton(self.title_bar, text="–", width=20, command=self.minimize_window, fg_color="transparent", hover_color="#444", corner_radius=0)
+        self.minimize_button.pack(side="right", padx=(0, 2))
+
         self.title_bar.bind("<Button-1>", self.start_move)
         self.title_bar.bind("<B1-Motion>", self.do_move)
         self.title_label.bind("<Button-1>", self.start_move)
@@ -194,6 +194,12 @@ class BackgroundRemoverApp:
         self.root.overrideredirect(False)
         self.root.iconify()
         self.root.after(10, lambda: self.root.overrideredirect(True))
+    
+    def maximize_window(self):
+        if self.root.state() == "zoomed":
+            self.root.state("normal")
+        else:
+            self.root.state("zoomed")
 
 if __name__ == "__main__":
     root = TkinterDnD.Tk()
