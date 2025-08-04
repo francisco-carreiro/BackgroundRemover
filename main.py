@@ -2,7 +2,7 @@ import os
 import customtkinter as ctk
 from customtkinter import CTkImage
 from tkinter import filedialog, messagebox
-from PIL import Image, ImageTk
+from PIL import Image
 from rembg import remove
 from tkinterdnd2 import DND_FILES, TkinterDnD
 
@@ -21,7 +21,8 @@ class BackgroundRemoverApp:
 
         # Main frame
         self.main_frame = ctk.CTkFrame(root, corner_radius=15)
-        self.main_frame.pack(padx=20, pady=20, fill="both", expand=True)
+        self.main_frame.pack(fill="both", expand=True)
+        self.root.overrideredirect(True)
 
         # Drop area
         self.drop_area = ctk.CTkButton(
@@ -43,6 +44,32 @@ class BackgroundRemoverApp:
         self.drop_area.bind("<Enter>", lambda e: self.drop_area.configure(fg_color="#dceaf6"))
         self.drop_area.bind("<Leave>", lambda e: self.drop_area.configure(fg_color="#e3eaf0"))
         
+        # Custom title bar
+        self.title_bar = ctk.CTkFrame(self.main_frame, corner_radius=0, height=30, fg_color="#2b2b2b")
+        self.title_bar.pack(fill="x", side="top")
+
+        # App title
+        self.title_label = ctk.CTkLabel(self.title_bar, text="  Background Remover", font=ctk.CTkFont(size=13, weight="bold"))
+        self.title_label.pack(side="left", padx=10)
+
+        # Minimize button
+        self.minimize_button = ctk.CTkButton(self.title_bar, text="–", width=20, command=self.minimize_window, fg_color="transparent", hover_color="#444", corner_radius=0)
+        self.minimize_button.pack(side="right", padx=(0, 2))
+
+        # Maximize / restore (optional)
+        # self.maximize_button = ctk.CTkButton(self.title_bar, text="□", width=20, command=self.maximize_window, fg_color="transparent", hover_color="#444", corner_radius=0)
+        # self.maximize_button.pack(side="right")
+
+        # Close button
+        self.close_button = ctk.CTkButton(self.title_bar, text="✕", width=20, command=self.root.destroy, fg_color="transparent", hover_color="#a00", corner_radius=0)
+        self.close_button.pack(side="right")
+        
+        self.title_bar.bind("<Button-1>", self.start_move)
+        self.title_bar.bind("<B1-Motion>", self.do_move)
+        self.title_label.bind("<Button-1>", self.start_move)
+        self.title_label.bind("<B1-Motion>", self.do_move)
+
+        
         # Container for scroll area and background watermark
         self.scroll_container = ctk.CTkFrame(self.main_frame, corner_radius=10)
         self.scroll_container.pack(padx=10, pady=10, fill="both", expand=True)
@@ -57,7 +84,6 @@ class BackgroundRemoverApp:
         
         self.watermark_label = ctk.CTkLabel(self.scroll_container, image=self.watermark_tk, text="")
         self.watermark_label.place(relx=0.5, rely=0.5, anchor="center")
-        self.watermark_label.lower()
 
         # Progress bar
         self.progress = ctk.CTkProgressBar(self.main_frame)
@@ -72,7 +98,7 @@ class BackgroundRemoverApp:
             fg_color="#0078D7",
             hover_color="#005fa3",
             corner_radius=8,
-            height=35,
+            height=45,
             font=ctk.CTkFont(weight="bold")
         )
         self.process_button.pack(pady=12)
@@ -98,7 +124,7 @@ class BackgroundRemoverApp:
             try:
                 image = Image.open(path)
                 image.thumbnail(THUMB_SIZE)
-                thumb = ImageTk.PhotoImage(image)
+                thumb = CTkImage(light_image=image, size=THUMB_SIZE)
                 self.thumbnail_refs.append(thumb)
 
                 card = ctk.CTkFrame(self.scroll_frame, corner_radius=10)
@@ -156,6 +182,19 @@ class BackgroundRemoverApp:
         self.watermark_label.place(relx=0.5, rely=0.5, anchor="center")
         self.watermark_label.lower()
         self.progress.set(0)
+        
+    def start_move(self, event):
+        self.x = event.x
+        self.y = event.y
+
+    def do_move(self, event):
+        self.root.geometry(f"+{event.x_root - self.x}+{event.y_root - self.y}")
+        
+    def minimize_window(self):
+        self.root.update_idletasks()
+        self.root.overrideredirect(False)
+        self.root.iconify()
+        self.root.after(10, lambda: self.root.overrideredirect(True))
 
 if __name__ == "__main__":
     root = TkinterDnD.Tk()
