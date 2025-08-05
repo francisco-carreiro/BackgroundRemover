@@ -20,7 +20,7 @@ class BackgroundRemoverApp:
         self.thumbnail_refs = []
 
         # Main frame
-        self.main_frame = ctk.CTkFrame(root, corner_radius=15)
+        self.main_frame = ctk.CTkFrame(root, corner_radius=0)
         self.main_frame.pack(fill="both", expand=True)
         self.root.overrideredirect(True)
         
