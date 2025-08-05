@@ -108,4 +108,4 @@ Built with:
 - [customtkinter](https://github.com/TomSchimansky/CustomTkinter)
 - [rembg](https://github.com/danielgatis/rembg)
 - [tkinterdnd2](https://github.com/pmgagne/tkinterdnd2)
-- Designed and packaged with ❤️ by *You*.
+- Designed and packaged with ❤️ by *Francisco Machado Carreiro*.
