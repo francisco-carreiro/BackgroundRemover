@@ -74,7 +74,7 @@ class BackgroundRemoverApp:
         self.scroll_container.pack(padx=10, pady=10, fill="both", expand=True)
 
         # Load watermark and place it in the background
-        watermark_pil = Image.open("watermark.png")
+        watermark_pil = Image.open("D:\Dev\BackgroundRemover\watermark.png")
         self.watermark_tk = CTkImage(light_image=watermark_pil, size=(250, 250))
         
         # Scrollable frame layered on top
@@ -203,6 +203,6 @@ class BackgroundRemoverApp:
 
 if __name__ == "__main__":
     root = TkinterDnD.Tk()
-    root.iconbitmap("icon.ico")
+    root.iconbitmap("D:\Dev\BackgroundRemover\icon.ico")
     app = BackgroundRemoverApp(root)
     root.mainloop()
