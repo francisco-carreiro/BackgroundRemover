@@ -1,3 +1,4 @@
+import sys
 import os
 import customtkinter as ctk
 from customtkinter import CTkImage
@@ -7,6 +8,13 @@ from rembg import remove
 from tkinterdnd2 import DND_FILES, TkinterDnD
 
 THUMB_SIZE = (100, 100)
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS  # When running in PyInstaller bundle
+    except AttributeError:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 class BackgroundRemoverApp:
     def __init__(self, root):
@@ -74,7 +82,8 @@ class BackgroundRemoverApp:
         self.scroll_container.pack(padx=10, pady=10, fill="both", expand=True)
 
         # Load watermark and place it in the background
-        watermark_pil = Image.open("D:\Dev\BackgroundRemover\watermark.png")
+        watermark_path = resource_path("watermark.png")
+        watermark_pil = Image.open(watermark_path)
         self.watermark_tk = CTkImage(light_image=watermark_pil, size=(250, 250))
         
         # Scrollable frame layered on top
@@ -203,6 +212,7 @@ class BackgroundRemoverApp:
 
 if __name__ == "__main__":
     root = TkinterDnD.Tk()
-    root.iconbitmap("D:\Dev\BackgroundRemover\icon.ico")
+    icon_path = resource_path("icon.ico")
+    root.iconbitmap(icon_path)
     app = BackgroundRemoverApp(root)
     root.mainloop()
