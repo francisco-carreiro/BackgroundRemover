@@ -1,4 +1,4 @@
 rembg
-pillow
+pillow==13.0.0
 onnxruntime
 customtkinter
